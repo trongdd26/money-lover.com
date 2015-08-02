@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Grid System tutorial from BootstrapBay.com">
+    <meta name="author" content="BootstrapBay.com">
+    <title>BootstrapBay Tutorial</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/custom.css" rel="stylesheet">
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+</head>
+<body onload="loadCategory()">
+<!-- Fixed navbar -->
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Quản lý chi tiêu</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="index.html">Quản lý giao dịch</a></li>
+                <li class="active" ><a href="category.html">Quản lý mục chi tiêu</a></li>
+                <li><a href="chart.html">Thống kê</a></li>
+            </ul>
+        </div>
+        <!--/.nav-collapse -->
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="jumbotron text-center" style="padding: 5px;">
+        <h4>Thu tiền</h4>
+        <div class="list-group income-money" style="margin: 0px">
+            <a href="#" class="list-group-item" style="text-align: left"><span class="badge"></span>Bán đồ</a>
+            <a href="#" class="list-group-item" style="text-align: left"><span class="badge"></span>Lương</a>
+            <a href="#" class="list-group-item" style="text-align: left"><span class="badge"></span>Nợ</a>
+            <a href="#" class="list-group-item" style="text-align: left"><span class="badge"></span>Thưởng</a>
+			<a href="#" class="list-group-item" style="text-align: left"><span class="badge"></span>Tiền lãi</a>
+			<a href="#" class="list-group-item" style="text-align: left"><span class="badge"></span>Được tặng</a>
+			<a href="#" class="list-group-item" style="text-align: left"><span class="badge"></span>Khác</a>
+        </div>
+    </div>
+	
+	<div class="jumbotron text-center" style="padding: 5px;">
+        <h4>Chi tiêu</h4>
+        <div class="list-group outcome-money" style="margin: 0px">
+            <a href="#" class="list-group-item" style="text-align: left"><span class="badge"></span>Bạn bè & tình yêu</a>
+            <a href="#" class="list-group-item" style="text-align: left"><span class="badge"></span>Cho vay</a>
+            <a href="#" class="list-group-item" style="text-align: left"><span class="badge"></span>Di chuyển</a>
+            <a href="#" class="list-group-item" style="text-align: left"><span class="badge"></span>Du lịch</a>
+			<a href="#" class="list-group-item" style="text-align: left"><span class="badge"></span>Gia đình</a>
+			<a href="#" class="list-group-item" style="text-align: left"><span class="badge"></span>Giáo dục</a>
+			<a href="#" class="list-group-item" style="text-align: left"><span class="badge"></span>Giải trí</a>
+			<a href="#" class="list-group-item" style="text-align: left"><span class="badge"></span>Mua sắm</a>
+			<a href="#" class="list-group-item" style="text-align: left"><span class="badge"></span>Sức khỏe</a>
+			<a href="#" class="list-group-item" style="text-align: left"><span class="badge"></span>Ăn uống</a>
+			<a href="#" class="list-group-item" style="text-align: left"><span class="badge"></span>Đầu tư</a>
+			<a href="#" class="list-group-item" style="text-align: left"><span class="badge"></span>Khác</a>
+        </div>
+    </div>
+
+    <div class="jumbotron text-center">
+        <a href="#add-category" class="btn btn-success" data-toggle="modal">Thêm mục mới</a>
+    </div>
+</div>
+
+
+<!-- Fixed footer -->
+<div class="navbar navbar-inverse navbar-fixed-bottom" role="navigation">
+    <div class="container">
+        <div class="navbar-text pull-left">
+            <p>© 2014 BootstrapBay.</p>
+        </div>
+        <div class="navbar-text pull-right">
+            <a href="#"><i class="fa fa-facebook-square fa-2x"></i></a>
+            <a href="#"><i class="fa fa-twitter fa-2x"></i></a>
+            <a href="#"><i class="fa fa-google-plus fa-2x"></i></a>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap core JavaScript
+    ================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<div class="modal fade" id="add-category" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form class="form-horizontal" role="form">
+                <div class="modal-header">
+                    <h4>Thêm <h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="contact-name" class="col-sm-2 control-label">Tên</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="contact-name" placeholder="Tên nhóm">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-email" class="col-sm-2 control-label"></label>
+                        <div class="col-sm-10">
+							<label class="radio-inline"><input type="radio" name="optradio">Thu</label>
+							<label class="radio-inline"><input type="radio" name="optradio">Chi</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-default" data-dismiss="modal">Đóng</a>
+                    <button type="submit" class="btn btn-primary">Thêm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script>
+    function loadCategory(){
+        $('.income-money').empty();
+        $('.outcome-money').empty();
+        $.ajax({
+            url: "service/category_list.php",
+            type: "POST",
+            dataType: "json",
+            success: function(result){
+                var data = result['result'];
+                for(var index in data){
+                    var x = '<a href="/service/category_delete.php?categoryId='+data[index].id+'"  onclick="return confirm(\'Xóa mục này không?\')" class="list-group-item" style="text-align: left" data-toggle="modal"><span class="badge"></span>'+data[index].categoryName+'</a>';
+                    if (data[index].categoryType == 1) $('.income-money').append(x);
+                    else $('.outcome-money').append(x);
+                }
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

@@ -38,13 +38,26 @@
             return false;
         }
         public static function get10LastTransaction($userId){
-            $sql = 'SELECT * FROM tbl_transaction WHERE userId = ? ORDER BY date DESC LIMIT 10 ';
+            $sql = 'SELECT *, (SELECT categoryName FROM tbl_category WHERE id = categoryId) AS categoryName, DATE_FORMAT(date, "%Y/%m/%d %H:%i") AS dateFormat FROM tbl_transaction WHERE userId = ? ORDER BY date DESC LIMIT 10 ';
             $stmt = Database::getInstance()->getConnection()->prepare($sql);
             $stmt->bind_param("i", $userId);
             $arr = array();
             if($stmt->execute()){
                 $res = $stmt->get_result();
-                while($row = mysql_fetch_assoc($res)){
+                while($row = $res->fetch_assoc()){
+                    array_push($arr,$row);
+                }
+            }
+            return $arr;
+        }
+        public static function getStatistic($userId){
+            $sql = "SELECT p AS PAY,q AS GAINT, (p+q) AS TOTALS FROM (SELECT COALESCE((SELECT SUM(money) AS p FROM tbl_transaction WHERE money < 0 AND userId = ? GROUP BY money),0) AS p)  AS PAY, (SELECT COALESCE((SELECT SUM(money) AS q FROM tbl_transaction WHERE money > 0 AND userId = ? GROUP BY money),0) AS q)  AS GAINT";
+            $stmt = Database::getInstance()->getConnection()->prepare($sql);
+            $stmt->bind_param("ii", $userId,$userId);
+            $arr = array();
+            if($stmt->execute()){
+                $res = $stmt->get_result();
+                while($row = $res->fetch_assoc()){
                     array_push($arr,$row);
                 }
             }

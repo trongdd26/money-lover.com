@@ -1,22 +1,20 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: Admin
- * Date: 8/1/2015
- * Time: 6:53 AM
+ * User: Administrator
+ * Date: 8/2/2015
+ * Time: 4:14 PM
  */
     require_once("../util/ParamUtils.php");
-    require_once("../database/Transaction.php");
     require_once("../database/Category.php");
     session_start();
     $result = array("result"=>false);
     try{
-//        $user = $_SESSION['user'];
+    //        $user = $_SESSION['user'];
         $user = array("id"=>1);
         if ($user == null) throw new Exception("");
         $result = array(
-            "result"=> Transaction::get10LastTransaction($user['id']),
-            "categoryResult" => Category::getCategoryByUserId($user['id'])
+            "result" => Category::getCategoryByUserId($user['id'])
         );
 
     } catch (Exception $e){

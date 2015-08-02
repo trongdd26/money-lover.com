@@ -4,16 +4,15 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Contact Form tutorial from BootstrapBay.com">
+    <meta name="description" content="Grid System tutorial from BootstrapBay.com">
     <meta name="author" content="BootstrapBay.com">
     <title>BootstrapBay Tutorial</title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/custom.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/jquery.datetimepicker.css"/>
     <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
 </head>
-<body>
+<body onload="getTop10()">
 <!-- Fixed navbar -->
 <div class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
@@ -24,25 +23,13 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">BootstrapBay</a>
+            <a class="navbar-brand" href="#">Quản lý chi tiêu</a>
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Themes <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li class="dropdown-header">Admin & Dashboard</li>
-                        <li><a href="#">Admin 1</a></li>
-                        <li><a href="#">Admin 2</a></li>
-                        <li class="divider"></li>
-                        <li class="dropdown-header">Portfolio</li>
-                        <li><a href="#">Portfolio 1</a></li>
-                        <li><a href="#">Portfolio 2</a></li>
-                    </ul>
-                </li>
-                <li><a href="#contact" data-toggle="modal">Contact</a></li>
+                <li class="active"><a href="index.html">Quản lý giao dịch</a></li>
+                <li><a href="category.html">Quản lý mục chi tiêu</a></li>
+                <li><a href="chart.html">Thống kê</a></li>
             </ul>
         </div>
         <!--/.nav-collapse -->
@@ -51,22 +38,28 @@
 
 <div class="container">
 
-    <div class="jumbotron text-center" style="padding: 10px;">
-        <h3 style="padding-bottom: 10px;">Tổng quan</h3>
-        <div class="list-group" style="margin-bottom: 0px">
-            <a href="#" class="list-group-item list-group-item-success" style="text-align: left"><span class="badge">200.000đ</span>Thu nhập</a>
-            <a href="#" class="list-group-item list-group-item-danger" style="text-align: left"><span class="badge">2.000.000đ</span>Chi tiêu</a>
-            <a href="#" class="list-group-item list-group-item-danger" style="text-align: left"><span class="badge">1.800.000đ</span>Tổng</a>
+    <div class="jumbotron text-center" style="padding: 5px;">
+        <h4>Tổng quát</h4>
+        <ul class="list-group-s" style="margin: 0px;padding-left: 0px">
+
+        </ul>
+    </div>
+
+    <div class="jumbotron text-center" style="padding: 5px;">
+        <h4>Giao dịch gần nhất</h4>
+        <div class="list-group" style="margin: 0px">
+
         </div>
     </div>
 
     <div class="jumbotron text-center">
-        <button type="button" class="btn btn-success">ADD</button>
+        <a href="#add-transaction" class="btn btn-success" data-toggle="modal">Thêm mới giao dịch</a>
     </div>
 </div>
 
 
 <!-- Fixed footer -->
+<!--
 <div class="navbar navbar-inverse navbar-fixed-bottom" role="navigation">
     <div class="container">
         <div class="navbar-text pull-left">
@@ -79,48 +72,221 @@
         </div>
     </div>
 </div>
+-->
 
 <!-- Bootstrap core JavaScript
     ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-<div class="modal fade" id="contact" role="dialog">
+<div class="modal fade" id="add-transaction" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form class="form-horizontal" role="form">
+            <form class="form-horizontal" role="form" id="add-transaction-form" action="service/transaction_add.php" method="POST">
                 <div class="modal-header">
-                    <h4>Contact<h4>
+                    <h4>Thêm mới giao dịch<h4>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="contact-name" class="col-sm-2 control-label">Name</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="contact-name" placeholder="First & Last Name">
+                        <label class="col-sm-2 control-label">Chọn nhóm</label>
+                        <div class="col-sm-10 add-transaction-category">
+                            <input type="text" class="form-control" id="add-transaction-name" placeholder="Nhóm">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="contact-email" class="col-sm-2 control-label">Email</label>
+                        <label class="col-sm-2 control-label">Số tiền</label>
                         <div class="col-sm-10">
-                            <input type="email" class="form-control" id="contact-email" placeholder="example@domain.com">
+                            <input type="number" name="money" class="form-control" id=add-transaction-money" placeholder="">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="contact-message" class="col-sm-2 control-label">Message</label>
+                        <label class="col-sm-2 control-label">Ghi chú</label>
                         <div class="col-sm-10">
-                            <textarea class="form-control" rows="4"></textarea>
+                            <textarea class="form-control" name="note" rows="4" id=add-transaction-note" ></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Ngày</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="date" class="form-control" id="add-transaction-date" placeholder="">
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a class="btn btn-default" data-dismiss="modal">Close</a>
-                    <button type="submit" class="btn btn-primary">Send</button>
+                    <a class="btn btn-default" data-dismiss="modal">Đóng</a>
+                    <button onclick="addTransaction()" class="btn btn-primary">OK</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
+<div class="modal fade edit-transaction" id="edit-transaction1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form class="form-horizontal" role="form" id="edit-transaction-form">
+                <div class="modal-header">
+                    <h4>Sửa giao dịch<h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Chọn nhóm</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="edit-transaction-name" placeholder="Nhóm">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Số tiền</label>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" id=edit-transaction-money" placeholder="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Ghi chú</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" rows="4" id=edit-transaction-note" ></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Ngày</label>
+                        <div class="col-sm-10">
+                            <input type="datetime-local" class="form-control" id=edit-transaction-date" placeholder="">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-default" data-dismiss="modal">Đóng</a>
+                    <button onclick="editTransaction()" class="btn btn-primary">OK</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="js/jquery.js"></script>
+<script src="js/jquery.datetimepicker.js"></script>
 <script src="js/bootstrap.min.js"></script>
+<script src="js/moment.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#add-transaction-date').datetimepicker().datetimepicker('setDate',new Date());
+        $('#add-transaction-date').val(moment().format('YYYY/MM/DD hh:mm'));
+    });
+    function initData(categoryResult){
+        $('.add-transaction-category').empty();
+        var categoryData = '<select class="form-control" name="categoryId">';
+        for(var index in categoryResult){
+            categoryData += ('<option value="'+categoryResult[index].id+'">'+categoryResult[index].categoryName+'</option>');
+        }
+        categoryData += '</select>';
+        $('.add-transaction-category').html(categoryData);
+    }
+    function getTop10(){
+        $.ajax({
+            url: "service/transaction_gettop10.php",
+            type: "POST",
+            dataType: "json",
+            success: function(result){
+                var list_group = $('.list-group');
+                var data = result['result'];
+                var categoryResult = result['categoryResult'];
+                clearData(list_group);
+                initData(categoryResult);
+                for(var index in data){
+                    var categoryName = "";
+                    if (data[index].categoryName == null) categoryName = "Không xác định";
+                    else categoryName = data[index].categoryName;
+                    var x = "<a href=\"#edit-transaction"+data[index].id+"\" class=\"list-group-item\" style=\"text-align: left\" data-toggle=\"modal\"><span class=\"badge\">"+data[index].money+"</span>"+categoryName+"</a>";
+                    list_group.append(x);
+                    var dataForm = fillData(categoryResult,data[index]);
+                    $('body').append(dataForm);
+                    $('#edit-transaction'+data[index].id+' #edit-transaction-date').datetimepicker().datetimepicker({value:data[index].dateFormat,step:10});
+                    $('#edit-transaction'+data[index].id+' #edit-transaction-date').val(data[index].dateFormat);
+                }
+            }
+        });
+        $.ajax({
+            url: "service/transaction_statistic.php",
+            type: "POST",
+            dataType: "json",
+            success: function(result){
+                var list_group = $('.list-group-s');
+                var data = result['result'];
+                list_group.empty();
+                for(var index in data){
+                    var x = '<li class="list-group-item list-group-item-success" style="text-align: left"><span class="badge">'+data[index].GAINT+'</span>Số tiền có</li>';
+                    var y = '<li class="list-group-item list-group-item-danger" style="text-align: left"><span class="badge">'+data[index].PAY+'</span>Số tiền đã chi tiêu</li>';
+                    var classes = "list-group-item list-group-item-success";
+                    if (data[index].TOTALS<0) classes = "list-group-item list-group-item-danger";
+                    var z = '<li class="'+classes+'" style="text-align: left"><span class="badge">'+data[index].TOTALS+'</span>Số tiền còn lại</li>';
+                    list_group.append(x);
+                    list_group.append(y);
+                    list_group.append(z);
+                }
+            }
+        });
+    }
+    function clearData(list_group){
+        list_group.empty();
+        $(".edit-transaction").each(function(){
+            $(this).remove();
+        });
+    }
+    function fillData(categoryResult,result){
+        var categoryData = '<select class="form-control" name="categoryId">';
+        for(var index in categoryResult){
+            var selected = "";
+            if (categoryResult[index].id == result.categoryId) selected = "selected";
+            categoryData += ('<option value="'+categoryResult[index].id+'" '+selected+'>'+categoryResult[index].categoryName+'</option>');
+        }
+        categoryData += '</select>';
+        var data = "" +
+            '<div class="modal fade edit-transaction" id="edit-transaction'+result.id+'" role="dialog">'+
+                '<div class="modal-dialog">' +
+                    '<div class="modal-content">' +
+                        '<form class="form-horizontal" role="form" id="edit-transaction-form" action="service/transaction_edit.php" method="POST" >'+
+                            '<div class="modal-header">'+
+                                '<h4>Sửa giao dịch<h4>'+
+                            '</div>'+
+                            '<input type="hidden" name="transactionId" value="'+result.id+'">'+
+                            '<div class="modal-body">'+
+                                '<div class="form-group">'+
+                                '<label class="col-sm-2 control-label">Chọn nhóm</label>'+
+                                    '<div class="col-sm-10">'+
+                                        categoryData+
+                                    '</div>'+
+                                '</div>'+
+                                '<div class="form-group">'+
+                                    '<label class="col-sm-2 control-label">Số tiền</label>'+
+                                    '<div class="col-sm-10">'+
+                                    '<input type="number" class="form-control" value="'+result.money+'" id=edit-transaction-money" name="money">'+
+                                    '</div>'+
+                                '</div>'+
+                                '<div class="form-group">'+
+                                    '<label class="col-sm-2 control-label">Ghi chú</label>'+
+                                    '<div class="col-sm-10">'+
+                                        '<textarea class="form-control" rows="4" id=edit-transaction-note" name="note" >'+result.note+'</textarea>'+
+                                    '</div>'+
+                                '</div>'+
+                                '<div class="form-group">'+
+                                    '<label class="col-sm-2 control-label">Ngày</label>'+
+                                    '<div class="col-sm-10">'+
+                                        '<input type="text" name="date" class="form-control" value="" id="edit-transaction-date">'+
+                                    '</div>'+
+                                '</div>'+
+                            '</div>'+
+                            '<div class="modal-footer">'+
+                                '<a href="service/transaction_delete.php?transactionId='+result.id+'" onclick="return confirm(\'Xóa mục này không?\')" class="btn btn-danger">Xóa</a>'+
+                                '<a class="btn btn-default" data-dismiss="modal">Đóng</a>'+
+                                '<button type="submit" class="btn btn-primary">OK</button>'+
+                            '</div>'+
+                        '</form>'+
+                    '</div>'+
+                '</div>'+
+            '</div>';
+        return data;
+    }
+</script>
 </body>
 </html>

@@ -7,8 +7,8 @@
  */
     class ParamUtils {
         private static $POST_ALLOW = true;
-        private static $GET_ALLOW = false;
-        public static function getParam($_POST,$_GET,$param){
+        private static $GET_ALLOW = true;
+        public static function getParam($param){
             $value = null;
             if (ParamUtils::$GET_ALLOW && array_key_exists($param,$_GET)) $value = $_GET[$param];
             if (ParamUtils::$POST_ALLOW && array_key_exists($param,$_POST)) $value = $_POST[$param];

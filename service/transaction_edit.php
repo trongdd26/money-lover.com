@@ -10,16 +10,18 @@
     session_start();
     $result = array("result"=>false);
     try{
-        $user = $_SESSION['user'];
+//        $user = $_SESSION['user'];
+        $user = array("id"=>1);
         if ($user == null) throw new Exception("");
-        $transactionId = ParamUtils::getParam($_POST,$_GET,'transactionId');
-        $categoryId = ParamUtils::getParam($_POST,$_GET,'categoryId');
-        $money = ParamUtils::getParam($_POST,$_GET,'money');
-        $note = ParamUtils::getParam($_POST,$_GET,'note');
-        $date = ParamUtils::getParam($_POST,$_GET,'date');
+        $transactionId = ParamUtils::getParam('transactionId');
+        $categoryId = ParamUtils::getParam('categoryId');
+        $money = ParamUtils::getParam('money');
+        $note = ParamUtils::getParam('note');
+        $date = ParamUtils::getParam('date');
         $result = array("result"=> Transaction::editTransaction($user['id'],$transactionId,$categoryId,$money,$note,$date));
     } catch (Exception $e){
 
     }
     json_encode($result);
+    header("Location: /index.html");
 ?>

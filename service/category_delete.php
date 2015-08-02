@@ -1,12 +1,12 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: Admin
- * Date: 8/1/2015
- * Time: 6:53 AM
+ * User: Administrator
+ * Date: 8/2/2015
+ * Time: 5:01 PM
  */
+// Allow all user can delete transaction
     require_once("../util/ParamUtils.php");
-    require_once("../database/Transaction.php");
     require_once("../database/Category.php");
     session_start();
     $result = array("result"=>false);
@@ -14,13 +14,11 @@
 //        $user = $_SESSION['user'];
         $user = array("id"=>1);
         if ($user == null) throw new Exception("");
-        $result = array(
-            "result"=> Transaction::get10LastTransaction($user['id']),
-            "categoryResult" => Category::getCategoryByUserId($user['id'])
-        );
-
+        $categoryId = ParamUtils::getParam('categoryId');
+        $result = array("result"=> Category::deleteCategory($categoryId));
     } catch (Exception $e){
 
     }
     echo json_encode($result);
+    header("Location: /Category.html");
 ?>
