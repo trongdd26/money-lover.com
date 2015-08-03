@@ -15,7 +15,7 @@
         if ($user == null) throw new Exception("");
         $transactionId = ParamUtils::getParam('transactionId');
         $categoryId = ParamUtils::getParam('categoryId');
-        $money = ParamUtils::getParam('money');
+        $money = str_replace(',','',ParamUtils::getParam('money'));
         $note = ParamUtils::getParam('note');
         $date = ParamUtils::getParam('date');
         $result = array("result"=> Transaction::editTransaction($user['id'],$transactionId,$categoryId,$money,$note,$date));

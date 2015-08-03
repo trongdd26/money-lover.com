@@ -23,7 +23,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">Quản lý chi tiêu</a>
+            <a class="navbar-brand">Quản lý chi tiêu</a>
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
@@ -101,13 +101,13 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Số tiền</label>
                         <div class="col-sm-10">
-                            <input type="number" name="money" class="form-control" id=add-transaction-money" placeholder="">
+                            <input type="text" name="money" class="form-control" id="add-transaction-money" placeholder="">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Ghi chú</label>
                         <div class="col-sm-10">
-                            <textarea class="form-control" name="note" rows="4" id=add-transaction-note" ></textarea>
+                            <textarea class="form-control" name="note" rows="4" id="add-transaction-note" ></textarea>
                         </div>
                     </div>
                     <div class="form-group">
@@ -143,25 +143,25 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Số tiền</label>
                         <div class="col-sm-10">
-                            <input type="number" class="form-control" id=edit-transaction-money" placeholder="">
+                            <input class="form-control" id="edit-transaction-money" placeholder="">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Ghi chú</label>
                         <div class="col-sm-10">
-                            <textarea class="form-control" rows="4" id=edit-transaction-note" ></textarea>
+                            <textarea class="form-control" rows="4" id="edit-transaction-note" ></textarea>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Ngày</label>
                         <div class="col-sm-10">
-                            <input type="datetime-local" class="form-control" id=edit-transaction-date" placeholder="">
+                            <input type="datetime-local" class="form-control" id="edit-transaction-date" placeholder="">
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <a class="btn btn-default" data-dismiss="modal">Đóng</a>
-                    <button onclick="editTransaction()" class="btn btn-primary">OK</button>
+                    <button type="submit" class="btn btn-primary">OK</button>
                 </div>
             </form>
         </div>
@@ -184,10 +184,21 @@
         $('.add-transaction-category').empty();
         var categoryData = '<select class="form-control" name="categoryId">';
         for(var index in categoryResult){
-            categoryData += ('<option value="'+categoryResult[index].id+'">'+categoryResult[index].categoryName+'</option>');
+            var style = categoryResult[index].categoryType==1?"#dff0d8;":"#f2dede;";
+            var label = categoryResult[index].categoryType==1?"Thu nhập : ":"Chi tiêu : ";
+            categoryData += ('<option value="'+categoryResult[index].id+'" style="background-color: '+style+'">'+label+categoryResult[index].categoryName+'</option>');
         }
         categoryData += '</select>';
         $('.add-transaction-category').html(categoryData);
+        $('#add-transaction-money').blur(function (){
+            var value = 0.0
+            try{
+                value = parseFloat($('#add-transaction-money').val().replace(/,/g, "")).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }catch(e){
+
+            }
+            $('#add-transaction-money').val(value);
+        });
     }
     function getTop10(){
         $.ajax({
@@ -204,12 +215,18 @@
                     var categoryName = "";
                     if (data[index].categoryName == null) categoryName = "Không xác định";
                     else categoryName = data[index].categoryName;
-                    var x = "<a href=\"#edit-transaction"+data[index].id+"\" class=\"list-group-item\" style=\"text-align: left\" data-toggle=\"modal\"><span class=\"badge\">"+data[index].money+"</span>"+categoryName+"</a>";
+                    var m = parseFloat(data[index].money.toString().replace(/,/g, "")).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    var x = "<a href=\"#edit-transaction"+data[index].id+"\" class=\"list-group-item\" style=\"text-align: left\" data-toggle=\"modal\"><span class=\"badge\">"+m+"</span>"+categoryName+"</a>";
                     list_group.append(x);
                     var dataForm = fillData(categoryResult,data[index]);
                     $('body').append(dataForm);
                     $('#edit-transaction'+data[index].id+' #edit-transaction-date').datetimepicker().datetimepicker({value:data[index].dateFormat,step:10});
                     $('#edit-transaction'+data[index].id+' #edit-transaction-date').val(data[index].dateFormat);
+                    $('#edit-transaction'+data[index].id+' #edit-transaction-money').blur(function (){
+                        
+                        var value = parseFloat($(this).val().replace(/,/g, "")).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        $(this).val(value);
+                    });
                 }
             }
         });
@@ -222,11 +239,14 @@
                 var data = result['result'];
                 list_group.empty();
                 for(var index in data){
-                    var x = '<li class="list-group-item list-group-item-success" style="text-align: left"><span class="badge">'+data[index].GAINT+'</span>Số tiền có</li>';
-                    var y = '<li class="list-group-item list-group-item-danger" style="text-align: left"><span class="badge">'+data[index].PAY+'</span>Số tiền đã chi tiêu</li>';
+                    var g = parseFloat(data[index].GAINT.toString().replace(/,/g, "")).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    var p = parseFloat(data[index].PAY.toString().replace(/,/g, "")).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    var t = parseFloat(data[index].TOTALS.toString().replace(/,/g, "")).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    var x = '<li class="list-group-item list-group-item-success" style="text-align: left"><span class="badge">'+g+'</span>Số tiền có</li>';
+                    var y = '<li class="list-group-item list-group-item-danger" style="text-align: left"><span class="badge">'+p+'</span>Số tiền đã chi tiêu</li>';
                     var classes = "list-group-item list-group-item-success";
                     if (data[index].TOTALS<0) classes = "list-group-item list-group-item-danger";
-                    var z = '<li class="'+classes+'" style="text-align: left"><span class="badge">'+data[index].TOTALS+'</span>Số tiền còn lại</li>';
+                    var z = '<li class="'+classes+'" style="text-align: left"><span class="badge">'+t+'</span>Số tiền còn lại</li>';
                     list_group.append(x);
                     list_group.append(y);
                     list_group.append(z);
@@ -248,7 +268,7 @@
             categoryData += ('<option value="'+categoryResult[index].id+'" '+selected+'>'+categoryResult[index].categoryName+'</option>');
         }
         categoryData += '</select>';
-        var data = "" +
+        var data = '' +
             '<div class="modal fade edit-transaction" id="edit-transaction'+result.id+'" role="dialog">'+
                 '<div class="modal-dialog">' +
                     '<div class="modal-content">' +
@@ -267,13 +287,13 @@
                                 '<div class="form-group">'+
                                     '<label class="col-sm-2 control-label">Số tiền</label>'+
                                     '<div class="col-sm-10">'+
-                                    '<input type="number" class="form-control" value="'+result.money+'" id=edit-transaction-money" name="money">'+
+                                    '<input type="text" class="form-control" value="'+result.money+'" id="edit-transaction-money" name="money">'+
                                     '</div>'+
                                 '</div>'+
                                 '<div class="form-group">'+
                                     '<label class="col-sm-2 control-label">Ghi chú</label>'+
                                     '<div class="col-sm-10">'+
-                                        '<textarea class="form-control" rows="4" id=edit-transaction-note" name="note" >'+result.note+'</textarea>'+
+                                        '<textarea class="form-control" rows="4" id="edit-transaction-note" name="note" >'+result.note+'</textarea>'+
                                     '</div>'+
                                 '</div>'+
                                 '<div class="form-group">'+

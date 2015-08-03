@@ -14,7 +14,7 @@
         $user = array("id"=>1);
         if ($user == null) throw new Exception("");
         $categoryId = ParamUtils::getParam('categoryId');
-        $money = ParamUtils::getParam('money');
+        $money = str_replace(',','',ParamUtils::getParam('money'));
         $note = ParamUtils::getParam('note');
         $date = ParamUtils::getParam('date');
         $result = array( "result"=> Transaction::addTransaction($user['id'],$categoryId,$money,$note,$date));

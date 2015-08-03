@@ -41,7 +41,7 @@
             return $arr;
         }
         public static function getCategoryByUserId($userId){
-            $sql = 'SELECT * FROM tbl_category WHERE userId = ? ORDER BY categoryType DESC';
+            $sql = 'SELECT * FROM tbl_category WHERE userId = ? ORDER BY categoryType';
             $stmt = Database::getInstance()->getConnection()->prepare($sql);
             $stmt->bind_param("i", $userId);
             $arr = array();
