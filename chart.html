@@ -59,11 +59,24 @@
         });
     </script>
 </head>
-<body>
+<body onload="drawChart()">
 <script src="/highchart/js/highcharts.js"></script>
 <script src="/highchart/js/modules/exporting.js"></script>
 
 <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 
+<script type="text/javascript">
+    function drawChart(){
+        $.ajax({
+            url: "service/chart_by_month.php",
+            data: {startDate:'2013-01-23',endDate:'2016-04-01'}
+            type: "POST",
+            dataType: "json",
+            success: function(result){
+                console.log(result);
+            }
+        });
+    }
+</script>
 </body>
 </html>
