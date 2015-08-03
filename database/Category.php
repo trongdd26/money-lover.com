@@ -53,5 +53,18 @@
             }
             return $arr;
         }
+        public static function getCategoryById($id){
+            $sql = 'SELECT * FROM tbl_category WHERE id = ?';
+            $stmt = Database::getInstance()->getConnection()->prepare($sql);
+            $stmt->bind_param("i", $id);
+            $arr = array();
+            if($stmt->execute()){
+                $res = $stmt->get_result();
+                if($row = $res->fetch_assoc()){
+                    return $row;
+                }
+            }
+            return null;
+        }
     }
 ?>

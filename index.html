@@ -35,6 +35,8 @@
                         <li class="dropdown-header">Theo giao dịch</li>
                         <li><a href="chart_month.html">Theo tháng</a></li>
                         <li><a href="chart_day.html">Theo ngày</a></li>
+                        <li><a href="chart_category_income.html">Theo khoản thu nhập</a></li>
+                        <li><a href="chart_category_outcome.html">Theo khoản chi tiêu</a></li>
                     </ul>
                 </li>     
             </ul>
@@ -126,48 +128,6 @@
     </div>
 </div>
 
-<div class="modal fade edit-transaction" id="edit-transaction1" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form class="form-horizontal" role="form" id="edit-transaction-form">
-                <div class="modal-header">
-                    <h4>Sửa giao dịch<h4>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Chọn nhóm</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="edit-transaction-name" placeholder="Nhóm">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Số tiền</label>
-                        <div class="col-sm-10">
-                            <input class="form-control" id="edit-transaction-money" placeholder="">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Ghi chú</label>
-                        <div class="col-sm-10">
-                            <textarea class="form-control" rows="4" id="edit-transaction-note" ></textarea>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Ngày</label>
-                        <div class="col-sm-10">
-                            <input type="datetime-local" class="form-control" id="edit-transaction-date" placeholder="">
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a class="btn btn-default" data-dismiss="modal">Đóng</a>
-                    <button type="submit" class="btn btn-primary">OK</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
@@ -191,13 +151,7 @@
         categoryData += '</select>';
         $('.add-transaction-category').html(categoryData);
         $('#add-transaction-money').blur(function (){
-            var value = 0.0
-            try{
-                value = parseFloat($('#add-transaction-money').val().replace(/,/g, "")).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            }catch(e){
-
-            }
-            $('#add-transaction-money').val(value);
+            $('#add-transaction-money').val(normalizeMoney($('#add-transaction-money').val()));
         });
     }
     function getTop10(){
@@ -215,8 +169,9 @@
                     var categoryName = "";
                     if (data[index].categoryName == null) categoryName = "Không xác định";
                     else categoryName = data[index].categoryName;
-                    var m = parseFloat(data[index].money.toString().replace(/,/g, "")).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                    var x = "<a href=\"#edit-transaction"+data[index].id+"\" class=\"list-group-item\" style=\"text-align: left\" data-toggle=\"modal\"><span class=\"badge\">"+m+"</span>"+categoryName+"</a>";
+                    var style = data[index].categoryType==1?"#dff0d8;":"#f2dede;";
+                    var dateFormat = moment(data[index].date).format('YYYY/MM/DD');
+                    var x = '<a href="#edit-transaction'+data[index].id+'" class="list-group-item" style="text-align: left;background-color:'+style+'" data-toggle="modal"><span class="badge">'+normalizeMoney(data[index].money)+'</span><span style="padding-right: 30px">'+dateFormat+'</span><span>'+categoryName+'</span></a>';
                     list_group.append(x);
                     var dataForm = fillData(categoryResult,data[index]);
                     $('body').append(dataForm);
@@ -239,14 +194,11 @@
                 var data = result['result'];
                 list_group.empty();
                 for(var index in data){
-                    var g = parseFloat(data[index].GAINT.toString().replace(/,/g, "")).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                    var p = parseFloat(data[index].PAY.toString().replace(/,/g, "")).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                    var t = parseFloat(data[index].TOTALS.toString().replace(/,/g, "")).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                    var x = '<li class="list-group-item list-group-item-success" style="text-align: left"><span class="badge">'+g+'</span>Số tiền có</li>';
-                    var y = '<li class="list-group-item list-group-item-danger" style="text-align: left"><span class="badge">'+p+'</span>Số tiền đã chi tiêu</li>';
+                    var x = '<li class="list-group-item list-group-item-success" style="text-align: left"><span class="badge">'+normalizeMoney(data[index].GAINT)+'</span>Số tiền có</li>';
+                    var y = '<li class="list-group-item list-group-item-danger" style="text-align: left"><span class="badge">'+normalizeMoney(data[index].PAY)+'</span>Số tiền đã chi tiêu</li>';
                     var classes = "list-group-item list-group-item-success";
                     if (data[index].TOTALS<0) classes = "list-group-item list-group-item-danger";
-                    var z = '<li class="'+classes+'" style="text-align: left"><span class="badge">'+t+'</span>Số tiền còn lại</li>';
+                    var z = '<li class="'+classes+'" style="text-align: left"><span class="badge">'+normalizeMoney(data[index].TOTALS)+'</span>Số tiền còn lại</li>';
                     list_group.append(x);
                     list_group.append(y);
                     list_group.append(z);
@@ -263,9 +215,11 @@
     function fillData(categoryResult,result){
         var categoryData = '<select class="form-control" name="categoryId">';
         for(var index in categoryResult){
+            var style = categoryResult[index].categoryType==1?"#dff0d8;":"#f2dede;";
+            var label = categoryResult[index].categoryType==1?"Thu nhập : ":"Chi tiêu : ";
             var selected = "";
             if (categoryResult[index].id == result.categoryId) selected = "selected";
-            categoryData += ('<option value="'+categoryResult[index].id+'" '+selected+'>'+categoryResult[index].categoryName+'</option>');
+            categoryData += ('<option value="'+categoryResult[index].id+'" '+selected+' style="background-color: '+style+'">'+label+categoryResult[index].categoryName+'</option>');
         }
         categoryData += '</select>';
         var data = '' +
@@ -287,7 +241,7 @@
                                 '<div class="form-group">'+
                                     '<label class="col-sm-2 control-label">Số tiền</label>'+
                                     '<div class="col-sm-10">'+
-                                    '<input type="text" class="form-control" value="'+result.money+'" id="edit-transaction-money" name="money">'+
+                                    '<input type="text" class="form-control" value="'+normalizeMoney(result.money)+'" id="edit-transaction-money" name="money">'+
                                     '</div>'+
                                 '</div>'+
                                 '<div class="form-group">'+
@@ -313,6 +267,12 @@
                 '</div>'+
             '</div>';
         return data;
+    }
+    function normalizeMoney(money){
+        var val = parseFloat(money);
+        if(isNaN(val)) val = 0;
+        else val = parseFloat(money.toString().replace(/,/g, "")).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return val;
     }
 </script>
 </body>

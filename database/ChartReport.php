@@ -54,5 +54,33 @@
             }
             return $arr;
         }
+
+        public static function getIncomeSum($userId,$startDate,$endDate){
+            $sql = "select c.*, IFNULL(sum(money),0) AS total from tbl_category c left join (SELECT * from tbl_transaction where date BETWEEN ? AND ?) t on c.id = t.categoryId where c.categoryType = 1 AND c.userId = ? group by c.id";
+            $stmt = Database::getInstance()->getConnection()->prepare($sql);
+            $stmt->bind_param("ssi",$startDate,$endDate,$userId);
+            $arr = array();
+            if($stmt->execute()){
+                $res = $stmt->get_result();
+                while($row = $res->fetch_assoc()){
+                    array_push($arr,$row);
+                }
+            }
+            return $arr;
+        }
+
+        public static function getOutcomeSum($userId,$startDate,$endDate){
+            $sql = "select c.*, IFNULL(abs(sum(money)),0) AS total from tbl_category c left join (SELECT * from tbl_transaction where date BETWEEN ? AND ?) t on c.id = t.categoryId where c.categoryType = 2 AND c.userId = ? group by c.id";
+            $stmt = Database::getInstance()->getConnection()->prepare($sql);
+            $stmt->bind_param("ssi",$startDate,$endDate,$userId);
+            $arr = array();
+            if($stmt->execute()){
+                $res = $stmt->get_result();
+                while($row = $res->fetch_assoc()){
+                    array_push($arr,$row);
+                }
+            }
+            return $arr;
+        }
     }
 ?>

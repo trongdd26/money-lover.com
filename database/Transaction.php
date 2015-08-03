@@ -38,7 +38,7 @@
             return false;
         }
         public static function get10LastTransaction($userId){
-            $sql = 'SELECT *, (SELECT categoryName FROM tbl_category WHERE id = categoryId) AS categoryName, DATE_FORMAT(date, "%Y/%m/%d %H:%i") AS dateFormat FROM tbl_transaction WHERE userId = ? ORDER BY date DESC LIMIT 10 ';
+            $sql = 'SELECT *, (SELECT categoryName FROM tbl_category WHERE id = categoryId) AS categoryName,(SELECT categoryType FROM tbl_category WHERE id = categoryId) AS categoryType, DATE_FORMAT(date, "%Y/%m/%d %H:%i") AS dateFormat FROM tbl_transaction WHERE userId = ? ORDER BY date DESC LIMIT 10 ';
             $stmt = Database::getInstance()->getConnection()->prepare($sql);
             $stmt->bind_param("i", $userId);
             $arr = array();

@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Thống kê theo tháng</title>
+    <title>Thống kê thu nhập theo mục</title>
     <script type="text/javascript" src="js/jquery.min.js"></script>
     <style type="text/css">
         ${demo.css}
@@ -42,7 +42,7 @@
                         <li><a href="chart_category_income.html">Theo khoản thu nhập</a></li>
                         <li><a href="chart_category_outcome.html">Theo khoản chi tiêu</a></li>
                     </ul>
-                </li>     
+                </li>
             </ul>
         </div>
         <!--/.nav-collapse -->
@@ -52,7 +52,7 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-4">
-            <h3>Chọn thời gian (Thống kê theo ngày)</h3>
+            <h3>Chọn thời gian (Thống kê thu nhập)</h3>
             <div class="form-group">
                 <label for="usr">Từ ngày</label>
                 <input type="text" class="form-control" id="startDate">
@@ -75,70 +75,56 @@
     });
     function drawChart(){
         $.ajax({
-            url: "service/chart_by_day.php",
+            url: "service/chart_by_category_income.php",
             data: {startDate:$('#startDate').val(),endDate:$('#endDate').val()},
             type: "POST",
             dataType: "json",
             success: function(result){
-                var income = result.income;
-                var incomeTimeArr = new Array();
-                var incomeValArr = new Array();
+                var income = result.result;
+                var total = 0;
+                var incomeArr = new Array();
                 for(var index in income){
-                    var value = income[index];
-                    incomeTimeArr.push(value.day+"/"+value.month+"/"+value.year);
-                    incomeValArr.push(Math.abs(value.money));
+                    var value = new Object();
+                    value.name = income[index].categoryName;
+                    value.y = income[index].total;
+                    incomeArr.push(value);
                 }
-
-                var outcome = result.outcome;
-                var outcomeTimeArr = new Array();
-                var outcomeValArr = new Array();
-                for(var index in outcome){
-                    var value = outcome[index];
-                    outcomeTimeArr.push(value.month+"/"+value.year);
-                    outcomeValArr.push(Math.abs(value.money));
-                }
+                console.log(JSON.parse(JSON.stringify(incomeArr)));
                 // Draw chart
                 $('#container').highcharts({
+                    chart: {
+                        plotBackgroundColor: null,
+                        plotBorderWidth: null,
+                        plotShadow: false,
+                        type: 'pie'
+                    },
                     title: {
-                        text: 'Thống kê thu chi  từ ngày '+moment($("#startDate").val()).format("DD/MM/YYYY")+' đến '+moment($("#endDate").val()).format("DD/MM/YYYY"),
-                        x: -20 //center
-                    },
-                    subtitle: {
-                        text: '',
-                        x: -20
-                    },
-                    xAxis: {
-                        categories: incomeTimeArr
-                    },
-                    yAxis: {
-                        title: {
-                            text: 'Giá trị (đồng)'
-                        },
-                        plotLines: [{
-                            value: 0,
-                            width: 1,
-                            color: '#808080'
-                        }]
+                        text: 'Thống kê các khoản thu nhập từ ngày '+moment($("#startDate").val()).format("DD/MM/YYYY")+' đến ngày '+ moment($("#endDate").val()).format("DD/MM/YYYY")
                     },
                     tooltip: {
-                        valueSuffix: ' đồng'
+                        pointFormat: '{series.name}: <b>{point.y:.1f} đồng</b>'
                     },
-                    colors: ['#3239FF', '#F82626'],
-                    legend: {
-                        layout: 'vertical',
-                        align: 'right',
-                        verticalAlign: 'middle',
-                        borderWidth: 0
+                    plotOptions: {
+                        pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            dataLabels: {
+                                enabled: true,
+                                format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                                style: {
+                                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                                }
+                            },
+                            showInLegend: true
+                        }
                     },
                     series: [{
-                        name: 'Thu',
-                        data: incomeValArr
-                    }, {
-                        name: 'Chi',
-                        data: outcomeValArr
+                        name: "Thu được",
+                        colorByPoint: true,
+                        data: incomeArr
                     }]
                 });
-            // End of draw chart
+                // End of draw chart
             }
         });
     }

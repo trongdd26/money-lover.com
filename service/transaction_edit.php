@@ -7,6 +7,7 @@
  */
     require_once("../util/ParamUtils.php");
     require_once("../database/Transaction.php");
+    require_once("../database/Category.php");
     session_start();
     $result = array("result"=>false);
     try{
@@ -16,6 +17,11 @@
         $transactionId = ParamUtils::getParam('transactionId');
         $categoryId = ParamUtils::getParam('categoryId');
         $money = str_replace(',','',ParamUtils::getParam('money'));
+        $category = Category::getCategoryById($categoryId);
+        if (!is_null($category)){
+            if ($category['categoryType'] == 1) $money = abs(floatval($money));
+            else if ($category['categoryType'] == 2) $money = -abs(floatval($money));
+        }
         $note = ParamUtils::getParam('note');
         $date = ParamUtils::getParam('date');
         $result = array("result"=> Transaction::editTransaction($user['id'],$transactionId,$categoryId,$money,$note,$date));
