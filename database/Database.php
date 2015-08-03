@@ -2,7 +2,7 @@
     class Database {
         private $_connection;
         private static $_instance;
-        private $_host = "localhost";
+        private $_host = "dinhvigps.com.vn";
         private $_username = "root";
         private $_password = "1234";
         private $_database = "money_lover";

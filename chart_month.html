@@ -1,0 +1,116 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Thống kê theo tháng</title>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <style type="text/css">
+        ${demo.css}
+    </style>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/custom.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/jquery.datetimepicker.css"/>
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+</head>
+<body>
+<script src="highchart/js/highcharts.js"></script>
+<script src="highchart/js/modules/exporting.js"></script>
+<script src="js/jquery.datetimepicker.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/moment.js"></script>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-4">
+            <h3>Chọn thời gian</h3>
+            <div class="form-group">
+                <label for="usr">Từ ngày</label>
+                <input type="text" class="form-control" id="startDate">
+                <label for="usr">Đến ngày</label>
+                <input type="text" class="form-control" id="endDate">
+            </div>
+            <button type="button" class="btn btn-success" onclick="drawChart()">Tìm kiếm</button>
+        </div>
+    </div>
+</div>
+
+<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#startDate').datetimepicker({timepicker:false, format: 'Y-m-d'}).datetimepicker('setDate',new Date());
+        $('#startDate').val(moment().format('YYYY-MM-DD'));
+        $('#endDate').datetimepicker({timepicker:false, format: 'Y-m-d'}).datetimepicker('setDate',new Date());
+        $('#endDate').val(moment().format('YYYY-MM-DD'));
+    });
+    function drawChart(){
+        $.ajax({
+            url: "service/chart_by_month.php",
+            data: {startDate:$('#startDate').val(),endDate:$('#endDate').val()},
+            type: "POST",
+            dataType: "json",
+            success: function(result){
+                var income = result.income;
+                var incomeTimeArr = new Array();
+                var incomeValArr = new Array();
+                for(var index in income){
+                    var value = income[index];
+                    incomeTimeArr.push(value.month+"/"+value.year);
+                    incomeValArr.push(Math.abs(value.money));
+                }
+
+                var outcome = result.outcome;
+                var outcomeTimeArr = new Array();
+                var outcomeValArr = new Array();
+                for(var index in outcome){
+                    var value = outcome[index];
+                    outcomeTimeArr.push(value.month+"/"+value.year);
+                    outcomeValArr.push(Math.abs(value.money));
+                }
+                // Draw chart
+                $('#container').highcharts({
+                    title: {
+                        text: 'Thống kê thu chi (theo tháng) từ ngày '+moment($("#startDate").val()).format("DD/MM/YYYY")+' đến '+moment($("#endDate").val()).format("DD/MM/YYYY"),
+                        x: -20 //center
+                    },
+                    subtitle: {
+                        text: '',
+                        x: -20
+                    },
+                    xAxis: {
+                        categories: incomeTimeArr
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Giá trị (đồng)'
+                        },
+                        plotLines: [{
+                            value: 0,
+                            width: 1,
+                            color: '#808080'
+                        }]
+                    },
+                    tooltip: {
+                        valueSuffix: ' đồng'
+                    },
+                    colors: ['#3239FF', '#F82626'],
+                    legend: {
+                        layout: 'vertical',
+                        align: 'right',
+                        verticalAlign: 'middle',
+                        borderWidth: 0
+                    },
+                    series: [{
+                        name: 'Thu',
+                        data: incomeValArr
+                    }, {
+                        name: 'Chi',
+                        data: outcomeValArr
+                    }]
+                });
+            // End of draw chart
+            }
+        });
+    }
+</script>
+</body>
+</html>

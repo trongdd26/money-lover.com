@@ -1,6 +1,6 @@
 <?php
     require_once("../util/ParamUtils.php");
-    require_once("../database/Transaction.php");
+    require_once("../database/ChartReport.php");
     session_start();
     $result = array("result"=>false);
     try{
@@ -10,8 +10,8 @@
         $startDate = ParamUtils::getParam('startDate');
         $endDate = ParamUtils::getParam('endDate');
         $result = array(
-            "income"=> Transaction::getIncomeByMonth($user['id'],$startDate,$endDate),
-            "outcome"=> Transaction::getOutcomeByMonth($user['id'],$startDate,$endDate)
+            "income"=> ChartReport::getIncomeByMonth($user['id'],$startDate,$endDate),
+            "outcome"=> ChartReport::getOutcomeByMonth($user['id'],$startDate,$endDate)
         );
 
     } catch (Exception $e){

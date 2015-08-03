@@ -1,14 +1,17 @@
 <?php
     require_once("../util/ParamUtils.php");
-    require_once("../database/Transaction.php");
+    require_once("../database/ChartReport.php");
     session_start();
     $result = array("result"=>false);
     try{
 //        $user = $_SESSION['user'];
         $user = array("id"=>1);
         if ($user == null) throw new Exception("");
+        $startDate = ParamUtils::getParam('startDate');
+        $endDate = ParamUtils::getParam('endDate');
         $result = array(
-            "result"=> Transaction::get10LastTransaction($user['id'])
+            "income"=> ChartReport::getIncomeByDay($user['id'],$startDate,$endDate),
+            "outcome"=> ChartReport::getOutcomeByDay($user['id'],$startDate,$endDate)
         );
 
     } catch (Exception $e){
